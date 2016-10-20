@@ -7,7 +7,7 @@ using std::swap;
 
 namespace custom {
 
-template<
+template <
   typename T,
   typename Compare = std::less<typename std::iterator_traits<T>::value_type>
 >
@@ -37,7 +37,7 @@ void siftDown(T begin, T end, size_t i, size_t heap_size,
   }
 }
 
-template<
+template <
   typename T,
   typename Compare = std::less<typename std::iterator_traits<T>::value_type>
 >
@@ -52,7 +52,7 @@ void heapify(T begin, T end, Compare compare = Compare{}) {
   }
 }
 
-template<
+template <
   typename T,
   typename Compare = std::less<typename std::iterator_traits<T>::value_type>
 >
@@ -66,12 +66,10 @@ void heap_sort(T begin, T end, Compare compare = Compare{}) {
   
   for (size_t j = 0; j < heap_size; ++j) {
 
-    // heap_bound points to the rightmost element
-    // of the unsorted part of the container
+    // heap_bound points to the rightmost element of the unsorted part of the container
     size_t heap_bound = heap_size - j - 1;
 
-    // Swap highest element in the heap
-    // with heap bound
+    // Swap root node of the heap with heap bound
     swap(*begin, *(begin + heap_bound));
 
     // Sift down new top of heap
