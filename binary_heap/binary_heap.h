@@ -37,7 +37,10 @@ public:
   }
 
   void push(DataType val) {
+    // Add new element as the leave
     heap.push_back(val);
+    
+    // Then sift it up
     siftUp(heap_size++);
   }
 
@@ -48,11 +51,16 @@ public:
 
   void pop() {
     assert(heap_size > 0 && "Pop from empty heap");
+
+    // Set rightmost of leaves on the top position
     heap[0] = heap[--heap_size];
+
+    // Then sift it down
     siftDown(0);
   }
 
   const DataType* getPtr() {
+    // Return pointer to the underlying data
     return heap.data();
   }
 
@@ -62,27 +70,41 @@ private:
   size_t rightChild(size_t i) { return 2*i + 2; }
   
   void siftUp(size_t i) {
+    // While i-th node is not a root and heap property is violated
     while (i > 0 && compare(heap[parent(i)], heap[i])) {
+      
+      // Swap i-th node with his parent
       swap(heap[parent(i)], heap[i]);
+
+      // Check heap property for i-th node parent
       i = parent(i);
     }
   }
 
   void siftDown(size_t i) {
+    
+    // While i-th node has left child
     while (leftChild(i) < heap_size) {
       auto maxInd = i;
       
       auto lChild = leftChild(i);
       auto rChild = rightChild(i);
 
+      // Find max from i-th node children
       if (lChild < heap_size && compare(heap[maxInd], heap[lChild]))
         maxInd = lChild;
       
       if (rChild < heap_size && compare(heap[maxInd], heap[rChild]))
         maxInd = rChild;
 
+
+      // If heap property is violated
       if (i != maxInd) {
+
+        // Swap i-th node with his max child
         swap(heap[i], heap[maxInd]);
+
+        // Check heap property for max child
         i = maxInd;
       } else break;
     }
@@ -92,52 +114,6 @@ private:
   size_t heap_size = 0;
   Predicate compare = Predicate();
 };
-
-template<typename T>
-void siftDown(T begin, T end, size_t i, size_t sz,
-  function<bool(decltype(*begin), decltype(*begin))> compare = less<decltype(*begin)>()) {
-  
-  while (2*i+1 < sz) {
-    size_t maxInd = i;
-    size_t l = 2*i+1;
-    size_t r = 2*i+2;
-
-    if (l < sz && compare(*(begin + maxInd), *(begin + l)))
-      maxInd = l;
-    if (r < sz && compare(*(begin + maxInd), *(begin + r)))
-      maxInd = r;
-    
-    if (i != maxInd) {
-      swap(*(begin + i), *(begin + maxInd));
-      i = maxInd;
-    }
-    else break;
-  }
-}
-
-template<typename T>
-void heapify(T begin, T end,
-  function<bool(decltype(*begin), decltype(*begin))> compare = less<decltype(*begin)>()) {  
-  
-  size_t n = std::distance(begin, end);
-  for (size_t j = (n - 1)/2 + 1; j > 0; --j) {
-    siftDown(begin, end, j-1, n, compare);
-  }
-}
-
-template<typename T>
-void heap_sort(T begin, T end,
-  function<bool(decltype(*begin), decltype(*begin))> compare = less<decltype(*begin)>()) {  
-  
-  heapify(begin, end, compare);
-  size_t heap_size = std::distance(begin, end);
-  size_t counter = heap_size - 1;
-  for (size_t j = 0; j < heap_size; ++j) {
-    swap(*begin, *(begin + counter));
-    siftDown(begin, end, 0, counter, compare);
-    --counter;
-  }
-}
 
 } // custom namespace
 
