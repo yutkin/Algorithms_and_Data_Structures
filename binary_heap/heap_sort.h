@@ -44,7 +44,7 @@ void heapify(T begin, T end,
   size_t n = std::distance(begin, end);
 
   // Sift down first n/2 elements
-  for (size_t j = (n - 1)/2 + 1; j > 0; --j) {
+  for (size_t j = n/2; j > 0; --j) {
     siftDown(begin, end, j-1, n, compare);
   }
 }
