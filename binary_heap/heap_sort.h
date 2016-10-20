@@ -1,24 +1,24 @@
 #ifndef HEAP_SORT_H
 #define HEAP_SORT_H
 
-#include <functional>
 #include <cassert>
 
 using std::swap;
-using std::function;
-using std::less;
 
 namespace custom {
 
-template<typename T>
+template<
+  typename T,
+  typename Compare = std::less<typename std::iterator_traits<T>::value_type>
+>
 void siftDown(T begin, T end, size_t i, size_t heap_size,
-  function<bool(decltype(*begin), decltype(*begin))> compare = less<decltype(*begin)>()) {
-  
+  Compare compare = Compare{})
+{
   // 2*i+1 - left child
-  while (2*i+1 < heap_size) {
+  while ((i << 1) + 1 < heap_size) {
     size_t maxInd = i;
-    size_t l = 2*i+1;
-    size_t r = 2*i+2;
+    size_t l = (i << 1) + 1;
+    size_t r = (i + 1) << 1;
 
     // Find maximum from children
     if (l < heap_size && compare(*(begin + maxInd), *(begin + l)))
@@ -26,19 +26,22 @@ void siftDown(T begin, T end, size_t i, size_t heap_size,
     if (r < heap_size && compare(*(begin + maxInd), *(begin + r)))
       maxInd = r;
     
-    if (i != maxInd) {
-      // Swap with maximum of children
-      swap(*(begin + i), *(begin + maxInd));
-      i = maxInd;
-    }
-    // "Break" if heap property isn't violated
-    else break;
+    // "Break" if heap property is NOT violated
+    if (i == maxInd) break;
+    
+    // Swap with maximum of children
+    swap(*(begin + i), *(begin + maxInd));
+    
+    // Check heap property for max child 
+    i = maxInd; 
   }
 }
 
-template<typename T>
-void heapify(T begin, T end,
-  function<bool(decltype(*begin), decltype(*begin))> compare = less<decltype(*begin)>()) {  
+template<
+  typename T,
+  typename Compare = std::less<typename std::iterator_traits<T>::value_type>
+>
+void heapify(T begin, T end, Compare compare = Compare{}) {  
   
   // Get heap size for O(1)
   size_t n = std::distance(begin, end);
@@ -49,10 +52,12 @@ void heapify(T begin, T end,
   }
 }
 
-template<typename T>
-void heap_sort(T begin, T end,
-  function<bool(decltype(*begin), decltype(*begin))> compare = less<decltype(*begin)>()) {  
-  
+template<
+  typename T,
+  typename Compare = std::less<typename std::iterator_traits<T>::value_type>
+>
+void heap_sort(T begin, T end, Compare compare = Compare{}) {
+
   // Build a heap
   heapify(begin, end, compare);
 

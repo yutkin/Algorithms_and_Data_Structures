@@ -1,18 +1,15 @@
 #ifndef BINARY_HEAP_H
 #define BINARY_HEAP_H
 
-#include <functional>
 #include <vector>
 #include <cassert>
 #include <initializer_list>
 
 using std::swap;
-using std::function;
-using std::less;
 
 namespace custom {
 
-template<typename DataType, typename Predicate=less<DataType> >
+template <typename DataType, typename Compare = std::less<DataType> >
 class BinaryHeap {
 public:
   explicit BinaryHeap() {}
@@ -65,9 +62,14 @@ public:
   }
 
 private:
-  size_t parent(size_t i) { return (i - 1)/2; }
-  size_t leftChild(size_t i) { return 2*i + 1; }
-  size_t rightChild(size_t i) { return 2*i + 2; }
+  // (i-1)/2 parent node
+  size_t parent(size_t i) { return (i - 1) >> 1; }
+  
+  // 2*i+1 - left child
+  size_t leftChild(size_t i) { return (i << 1) + 1; } 
+
+  // 2*i+2 - right child
+  size_t rightChild(size_t i) { return (i + 1) << 1; }
   
   void siftUp(size_t i) {
     // While i-th node is not a root and heap property is violated
@@ -98,21 +100,20 @@ private:
         maxInd = rChild;
 
 
-      // If heap property is violated
-      if (i != maxInd) {
+      // If heap property is NOT violated
+      if (i == maxInd) break;
 
-        // Swap i-th node with his max child
-        swap(heap[i], heap[maxInd]);
+      // Swap i-th node with his max child
+      swap(heap[i], heap[maxInd]);
 
-        // Check heap property for max child
-        i = maxInd;
-      } else break;
+      // Check heap property for max child
+      i = maxInd;
     }
   }
 
   std::vector<DataType> heap;
   size_t heap_size = 0;
-  Predicate compare = Predicate();
+  Compare compare = Compare{};
 };
 
 } // custom namespace
