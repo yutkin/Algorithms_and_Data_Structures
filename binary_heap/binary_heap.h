@@ -14,7 +14,7 @@ class BinaryHeap {
 public:
   explicit BinaryHeap(): heap(1) {}
 
-  explicit BinaryHeap(std::initializer_list<DataType>& init): heap(1) {
+  explicit BinaryHeap(const std::initializer_list<DataType>& init): heap(1) {
     for (auto it = init.begin(); it != init.end(); ++it)
       push(*it);
   }
@@ -25,15 +25,15 @@ public:
       push(*it);
   }
 
-  size_t size() {
+  size_t size() const {
     return heap_size;
   }
 
-  bool empty() {
+  bool empty() const {
     return heap_size == 0;
   }
 
-  void push(DataType& val) {
+  void push(const DataType& val) {
     // If there is no enough space in heap, than allocate new
     if (heap_size == heap.capacity())
       heap.resize(heap.capacity()*2);
@@ -46,7 +46,7 @@ public:
     ++heap_size;
   }
 
-  DataType top() {
+  DataType top() const {
     assert(heap_size > 0 && "Top from empty heap");
     return heap.front();
   }
@@ -61,20 +61,20 @@ public:
     siftDown(0);
   }
 
-  const std::vector<DataType>& getPtr() {
+  const std::vector<DataType>& getPtr() const {
     // Return pointer to the underlying data
     return heap;
   }
 
 private:
   // (i-1)/2 parent node
-  size_t parent(size_t i) { return (i - 1) >> 1; }
+  size_t parent(size_t i) const { return (i - 1) >> 1; }
   
   // 2*i+1 - left child
-  size_t leftChild(size_t i) { return (i << 1) + 1; } 
+  size_t leftChild(size_t i) const { return (i << 1) + 1; } 
 
   // 2*i+2 - right child
-  size_t rightChild(size_t i) { return (i + 1) << 1; }
+  size_t rightChild(size_t i) const { return (i + 1) << 1; }
   
   void siftUp(size_t i) {
     // While i-th node is not a root and heap property is violated
