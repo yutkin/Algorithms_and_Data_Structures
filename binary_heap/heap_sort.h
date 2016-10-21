@@ -11,9 +11,11 @@ template <
   typename T,
   typename Compare = std::less<typename std::iterator_traits<T>::value_type>
 >
-void siftDown(T begin, T end, size_t i, size_t heap_size,
-  Compare compare = Compare{})
-{
+void siftDown(T begin, T end, size_t i, Compare compare = Compare{}) {
+  
+  // Get heap size for O(1)
+  size_t heap_size = std::distance(begin, end);
+
   // 2*i+1 - left child
   while ((i << 1) + 1 < heap_size) {
     size_t maxInd = i;
@@ -44,11 +46,11 @@ template <
 void heapify(T begin, T end, Compare compare = Compare{}) {  
   
   // Get heap size for O(1)
-  size_t n = std::distance(begin, end);
+  size_t heap_size = std::distance(begin, end);
 
-  // Sift down first n/2 elements
-  for (size_t j = n/2; j > 0; --j) {
-    siftDown(begin, end, j-1, n, compare);
+  // Sift down first heap_size/2 elements
+  for (size_t j = heap_size/2; j > 0; --j) {
+    siftDown(begin, end, j-1, compare);
   }
 }
 
@@ -73,7 +75,7 @@ void heap_sort(T begin, T end, Compare compare = Compare{}) {
     swap(*begin, *(begin + heap_bound));
 
     // Sift down new top of heap
-    siftDown(begin, end, 0, heap_bound, compare);
+    siftDown(begin, begin + heap_bound, 0, compare);
   }
 }
 

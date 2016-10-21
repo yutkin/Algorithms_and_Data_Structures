@@ -12,15 +12,15 @@ namespace custom {
 template <typename DataType, typename Compare = std::less<DataType> >
 class BinaryHeap {
 public:
-  explicit BinaryHeap() {}
+  explicit BinaryHeap(): heap(1) {}
 
-  BinaryHeap(std::initializer_list<DataType> init) {
+  explicit BinaryHeap(std::initializer_list<DataType>& init): heap(1) {
     for (auto it = init.begin(); it != init.end(); ++it)
       push(*it);
   }
   
   template <typename T>
-  BinaryHeap(T begin, T end) {
+  explicit BinaryHeap(T begin, T end): heap(1) {
     for (auto it = begin; it != end; ++it)
       push(*it);
   }
@@ -33,12 +33,17 @@ public:
     return heap_size == 0;
   }
 
-  void push(DataType val) {
-    // Add new element as the leave
-    heap.push_back(val);
+  void push(DataType& val) {
+    // If there is no enough space in heap, than allocate new
+    if (heap_size == heap.capacity())
+      heap.resize(heap.capacity()*2);
     
+    // Add new element as the leave
+    heap[heap_size] = val;
+
     // Then sift it up
-    siftUp(heap_size++);
+    siftUp(heap_size);
+    ++heap_size;
   }
 
   DataType top() {
@@ -56,9 +61,9 @@ public:
     siftDown(0);
   }
 
-  const DataType* getPtr() {
+  const std::vector<DataType>& getPtr() {
     // Return pointer to the underlying data
-    return heap.data();
+    return heap;
   }
 
 private:
