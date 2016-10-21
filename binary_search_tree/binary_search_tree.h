@@ -2,6 +2,7 @@
 #define BINARY_SEARCH_TREE_H
 
 #include <iostream>
+#include <iomanip>
 #include <memory>
 
 namespace custom {
@@ -28,9 +29,18 @@ public:
   explicit BinarySearchTree() {};
 
   void insert(const DataType&);
-  DataType min();
-
+  DataType min() const;
+  void printTree() const;
 private:
+  void printSubTree(const nodeptr& subTree) const {    
+    if (subTree == nullptr)
+      return;
+
+    printSubTree(subTree->_leftChild);
+    std::cout << subTree->_key << std::endl;
+    printSubTree(subTree->_rightChild);
+  }
+
   nodeptr _root;
 };
 
@@ -47,8 +57,11 @@ void BinarySearchTree<T>::insert(const T& key) {
     y = x;
     if (newNode->_key < x->_key)
       x = x->_leftChild;
-    else
+    else if (newNode->_key > x->_key)
       x = x->_rightChild;
+    else
+      // Force the tree store only unique elements
+      return;
   }
   newNode->_parent = y;
   if (y == nullptr)
@@ -60,11 +73,16 @@ void BinarySearchTree<T>::insert(const T& key) {
 }
 
 template <typename T>
-T BinarySearchTree<T>::min() {
+T BinarySearchTree<T>::min() const {
   auto x = _root;
   while (x->_leftChild != nullptr)
     x = x->_leftChild;
   return x->_key;
+}
+
+template <typename T>
+inline void BinarySearchTree<T>::printTree() const {
+  printSubTree(_root);
 }
 
 }

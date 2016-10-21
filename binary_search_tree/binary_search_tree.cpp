@@ -6,11 +6,11 @@
 
 using namespace std;
 
-int N = 1000;
+int N = 30;
 
 random_device rd;
 mt19937 rng(rd());
-uniform_int_distribution<int> uni(-9999,9999);
+uniform_int_distribution<int> uni(-2*N,2*N);
 
 int main() {
   custom::BinarySearchTree<int> bst;
@@ -25,7 +25,7 @@ int main() {
   auto vec_min = *min_element(v.begin(), v.end());
   auto tree_min = bst.min();
   assert(vec_min == tree_min);
-  cout << tree_min << endl;
   
+  bst.printTree();
   return 0;
 }

@@ -68,13 +68,19 @@ public:
 
 private:
   // (i-1)/2 parent node
-  size_t parent(size_t i) const { return (i - 1) >> 1; }
+  size_t parent(size_t i) const {
+    return (i - 1) >> 1;
+  }
   
   // 2*i+1 - left child
-  size_t leftChild(size_t i) const { return (i << 1) + 1; } 
+  size_t leftChild(size_t i) const {
+    return (i << 1) + 1;
+  } 
 
   // 2*i+2 - right child
-  size_t rightChild(size_t i) const { return (i + 1) << 1; }
+  size_t rightChild(size_t i) const {
+    return (i + 1) << 1;
+  }
   
   void siftUp(size_t i) {
     // While i-th node is not a root and heap property is violated
