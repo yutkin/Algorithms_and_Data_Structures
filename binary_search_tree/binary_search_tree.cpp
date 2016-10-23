@@ -37,9 +37,9 @@ int main() {
   cout << endl;
 
   cout << "Printed by iters:\n";
-  for (auto it = bst.begin(); it != bst.end(); ++it) {
-    cout << *it << endl;
+  for (const auto& it : bst) {
+    cout << it << endl;
   }
-
+  
   return 0;
 }

@@ -39,7 +39,7 @@ class BinarySearchTree {
       return rhs._node != this->_node;
     };
 
-    DataType operator*() const {
+    const DataType& operator*() const {
       // Undefined behavior providing that _node is nullptr ¯\_(ツ)_/¯
       return _node->_key; 
     };
@@ -122,18 +122,15 @@ void BinarySearchTree<T>::insert(const T& key) {
     _header->_leftChild = _root;
     _leftmost = _root;
     _rightmost = _root;
-  }
-  else if (newNode->_key < y->_key) {
+  } else if (newNode->_key < y->_key) {
     y->_leftChild = newNode;
     if (newNode->_key < _leftmost->_key)
       _leftmost = newNode;
-  }
-  else {
+  } else {
     y->_rightChild = newNode;
     if (newNode->_key > _rightmost->_key)
       _rightmost = newNode;
   }
-
   ++_tree_size;
 }
 
@@ -170,14 +167,15 @@ BinarySearchTree<T>::BstIterator::operator++() {
     return *this;
   }
   
-  auto nodeParent = _node->_parent;
-  while (nodeParent->_rightChild == _node) {
-    _node = nodeParent;
-    nodeParent = _node->_parent;
+  auto parent = _node->_parent;
+  while (parent->_rightChild == _node) {
+    _node = parent;
+    parent = _node->_parent;
   }  
 
-  if (_node->_rightChild != nodeParent)
-    _node = nodeParent;
+  if (_node->_rightChild != parent)
+    _node = parent;
+  
   return *this;
 }
 
