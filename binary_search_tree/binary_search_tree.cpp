@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int N = 8;
+int N = 5;
 
 random_device rd;
 mt19937 rng(rd());
@@ -17,7 +17,7 @@ int main() {
   
   cout << "Generated:\n";
   vector<int> v(N);
-  for (int i = 0; i < N; ++i) {
+  for (size_t i = 0; i < v.size(); ++i) {
     auto r = uni(rng);
     v[i] = r;
     bst.insert(r);
@@ -31,15 +31,18 @@ int main() {
   cout << tree_min << " vec min: " << vec_min << endl;
   cout << endl;
   assert(vec_min == tree_min);
-  
+  assert(bst.find(vec_min) != bst.end());
+
   cout << "Printed tree:\n";
   bst.printTree();
   cout << endl;
 
-  cout << "Printed by iters:\n";
-  for (const auto& it : bst) {
-    cout << it << endl;
-  }
+  // while (true) {
+  //   custom::BinarySearchTree<int> bst;
+  //   for (size_t i = 0; i < 100; ++i) {
+  //     auto r = uni(rng);
+  //     bst.insert(r);
+  //   }    
+  // }
   
-  return 0;
 }

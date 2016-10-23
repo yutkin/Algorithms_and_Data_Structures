@@ -27,6 +27,7 @@ class BinarySearchTree {
   typedef typename BstNode::BstNodePtr BstNodePtr;
 
   struct BstIterator {
+    friend class BinarySearchTree;
   public:
     BstIterator(const BstNodePtr& node): _node(node) {}
     BstIterator& operator++();
@@ -45,51 +46,68 @@ class BinarySearchTree {
     };
   private:
     BstNodePtr _node;
-    BstNodePtr _header;
   };
-
-private:
-  void printSubTree(const BstNodePtr& subTree) const;
 
 public:
-  explicit BinarySearchTree() {
-    _header = std::make_shared<BstNode>(42);
-  };
+  typedef struct BstIterator iterator;
+
+  explicit BinarySearchTree(): 
+    // Initalize header node by random value
+    _header(std::make_shared<BstNode>(42)),
+    _leftmost(_header),
+    _rightmost(_header),
+    _end(_header) {}
+
+  ~BinarySearchTree() {
+    // TODO
+  }
 
   void insert(const DataType&);
   void erase(const DataType&);
+  void erase(iterator&);
+
   DataType min() const;
   DataType max() const;
   void printTree() const;
   
-  BstIterator begin() const {
-    return BstIterator(_leftmost);
+  iterator begin() const {
+    return _leftmost;
   };
 
-  BstIterator end() const { 
-    return BstIterator(_header); 
+  iterator end() const { 
+    return _end;
   }
 
   size_t size() const { 
     return _tree_size; 
   }
 
+  iterator find(const DataType& key);
+
 private:
+  void _printSubTree(const BstNodePtr&) const;
+  void _transplant(BstNodePtr, BstNodePtr);
+  BstNodePtr _min(const BstNodePtr&) const;
+  void _increment(iterator&);
+
+
   BstNodePtr _root;
   BstNodePtr _header;
   size_t _tree_size = 0;
-  BstNodePtr _leftmost;
-  BstNodePtr _rightmost;
+
+  iterator _leftmost;
+  iterator _rightmost;
+  iterator _end;
 };
 
 template <typename T>
-void BinarySearchTree<T>::printSubTree(const BstNodePtr& subTree) const {
+void BinarySearchTree<T>::_printSubTree(const BstNodePtr& subTree) const {
   if (subTree == nullptr)
     return;
 
-  printSubTree(subTree->_leftChild);
+  _printSubTree(subTree->_leftChild);
   std::cout << subTree->_key << std::endl;
-  printSubTree(subTree->_rightChild);
+  _printSubTree(subTree->_rightChild);
 }
 
 template <typename T>
@@ -120,44 +138,115 @@ void BinarySearchTree<T>::insert(const T& key) {
   if (y == _header) {
     _root = newNode;
     _header->_leftChild = _root;
-    _leftmost = _root;
-    _rightmost = _root;
+    _leftmost._node = _root;
+    _rightmost._node = _root;
   } else if (newNode->_key < y->_key) {
     y->_leftChild = newNode;
-    if (newNode->_key < _leftmost->_key)
-      _leftmost = newNode;
+    if (newNode->_key < _leftmost._node->_key)
+      _leftmost._node = newNode;
   } else {
     y->_rightChild = newNode;
-    if (newNode->_key > _rightmost->_key)
-      _rightmost = newNode;
+    if (newNode->_key > _rightmost._node->_key)
+      _rightmost._node = newNode;
   }
   ++_tree_size;
 }
 
 template <typename T>
+typename BinarySearchTree<T>::BstNodePtr
+BinarySearchTree<T>::_min(const BstNodePtr& node) const {
+  auto x = node;
+  while (x->_leftChild != nullptr)
+    x = x->_leftChild;
+  return x;
+}
+
+template <typename T>
 T BinarySearchTree<T>::min() const {
-  assert(_leftmost != nullptr && "Getting min from empty tree");
-  return _leftmost->_key;
+  assert(_leftmost._node != nullptr && "Getting min from empty tree");
+  return _leftmost._node->_key;
 }
 
 template <typename T>
 T BinarySearchTree<T>::max() const {
-  assert(_rightmost != nullptr && "Getting max from empty tree");
-  return _rightmost->_key;
+  assert(_rightmost._node != nullptr && "Getting max from empty tree");
+  return _rightmost._node->_key;
 }
 
 template <typename T>
 inline void BinarySearchTree<T>::printTree() const {
-  printSubTree(_root);
+  _printSubTree(_root);
+}
+
+template <typename T>
+typename BinarySearchTree<T>::iterator
+BinarySearchTree<T>::find(const T& key) {
+  iterator foundNode = end();
+  auto node = _root;
+  while (node != nullptr)
+    if (key > node->_key)
+      node = node->_rightChild;
+    else if (key < node->_key)
+      node = node->_leftChild;
+    else {
+      foundNode = node;
+      break;
+    }
+  return foundNode;
+}
+
+template <typename T>
+void BinarySearchTree<T>::_transplant(BstNodePtr u, BstNodePtr v) {
+  if (u->_parent == _header) {
+    _root = v;
+    _header->_leftChild = v;
+  } else if (u == u->_parent->_leftChild)
+    u->_parent->_leftChild = v;
+  else
+    u->_parent->_rightChild = v;
+
+  if (v != nullptr)
+    v->_parent = u->_parent;
+}
+
+template <typename T>
+void BinarySearchTree<T>::erase(iterator& it) {
+  auto node = it._node;
+
+  if (node->_leftChild == nullptr)
+    _transplant(node, node->_rightChild);
+  else if (node->_rightChild == nullptr)
+    _transplant(node, node->_leftChild);
+  else {
+    auto x = _min(node->_rightChild);
+    if (x->_parent != node) {
+      _transplant(x, x->_rightChild);
+      x->_rightChild = node->_rightChild;
+      x->_rightChild->_parent = x;
+    }
+    _transplant(node, x);
+    x->_leftChild = node->_leftChild;
+    node->_leftChild->_parent = x;
+  }
+
+  if (node == _leftmost._node)
+    ++_leftmost;
+  
+  node.reset();
+  
+  --_tree_size;
 }
 
 template <typename T>
 void BinarySearchTree<T>::erase(const T& key) {
-
+  auto node = find(key);
+  
+  if (node != end())
+    erase(node);
 }
 
 template <typename T>
-typename BinarySearchTree<T>::BstIterator&
+typename BinarySearchTree<T>::iterator&
 BinarySearchTree<T>::BstIterator::operator++() {
 
   if (_node->_rightChild != nullptr) {
