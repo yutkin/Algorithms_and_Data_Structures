@@ -41,7 +41,7 @@ public:
     // Add new element as the leave
     heap[heap_size] = val;
 
-    // Then sift it up
+    // And sift it up
     siftUp(heap_size);
     ++heap_size;
   }
@@ -57,7 +57,7 @@ public:
     // Set rightmost of leaves on the top position
     heap[0] = heap[--heap_size];
 
-    // Then sift it down
+    // And sift it down
     siftDown(0);
   }
 
@@ -67,7 +67,7 @@ public:
   }
 
 private:
-  // (i-1)/2 parent node
+  // (i-1)/2 parent's node
   size_t parent(size_t i) const {
     return (i - 1) >> 1;
   }
@@ -86,7 +86,7 @@ private:
     // While i-th node is not a root and heap property is violated
     while (i > 0 && compare(heap[parent(i)], heap[i])) {
       
-      // Swap i-th node with his parent
+      // Swap i-th node with its parent
       swap(heap[parent(i)], heap[i]);
 
       // Check heap property for i-th node parent
@@ -103,7 +103,7 @@ private:
       auto lChild = leftChild(i);
       auto rChild = rightChild(i);
 
-      // Find max from i-th node children
+      // Find maximum of i-th node children
       if (lChild < heap_size && compare(heap[maxInd], heap[lChild]))
         maxInd = lChild;
       
@@ -114,10 +114,10 @@ private:
       // If heap property is NOT violated
       if (i == maxInd) break;
 
-      // Swap i-th node with his max child
+      // Swap i-th node with its max child
       swap(heap[i], heap[maxInd]);
 
-      // Check heap property for max child
+      // Check heap property at the new position
       i = maxInd;
     }
   }

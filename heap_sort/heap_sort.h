@@ -22,7 +22,7 @@ void siftDown(T begin, T end, size_t i, Compare compare = Compare{}) {
     size_t l = (i << 1) + 1;
     size_t r = (i + 1) << 1;
 
-    // Find maximum from children
+    // Find maximum of children
     if (l < heap_size && compare(*(begin + maxInd), *(begin + l)))
       maxInd = l;
     if (r < heap_size && compare(*(begin + maxInd), *(begin + r)))
@@ -34,7 +34,7 @@ void siftDown(T begin, T end, size_t i, Compare compare = Compare{}) {
     // Swap with maximum of children
     swap(*(begin + i), *(begin + maxInd));
     
-    // Check heap property for max child 
+    // Check heap property at the new position 
     i = maxInd; 
   }
 }
@@ -68,13 +68,14 @@ void heap_sort(T begin, T end, Compare compare = Compare{}) {
   
   for (size_t j = 0; j < heap_size; ++j) {
 
-    // heap_bound points to the rightmost element of the unsorted part of the container
+    /* heap_bound points to the rightmost element
+       of the unsorted part of the container */
     size_t heap_bound = heap_size - j - 1;
 
-    // Swap root node of the heap with heap bound
+    // Swap root node of the heap with the heap bound
     swap(*begin, *(begin + heap_bound));
 
-    // Sift down new top of heap
+    // Sift down new root of the heap
     siftDown(begin, begin + heap_bound, 0, compare);
   }
 }
