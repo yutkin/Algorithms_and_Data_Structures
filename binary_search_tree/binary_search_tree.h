@@ -56,7 +56,7 @@ public:
   typedef struct BstIterator iterator;
 
   explicit BinarySearchTree(): 
-    // 42 is random value. Just for meet a constructor requirements.
+    // 42 is random value. Just to meet a constructor requirements.
     _header(std::make_shared<BstNode>(42)),
     _leftmost(_header),
     _rightmost(_header),
@@ -103,13 +103,12 @@ private:
      _header->_left is ponter to the _root of the tree. */
   BstNodePtr _header;
 
-  /* _leftmost is iterator on the (minimal) node that
+  /* _leftmost is an iterator on the (minimal) node that
      points on the begin() of the tree. Also, allows
-     return min() for O(1).
-  */
+     return min() for O(1). */
   iterator _leftmost;
 
-  /* _rightmost points to the maximum node of the three.
+  /* _rightmost points to the maximum node of the tree.
     Allows return max() for O(1). */
   iterator _rightmost;
 
@@ -169,7 +168,7 @@ template <typename T>
 typename BinarySearchTree<T>::BstNodePtr
 BinarySearchTree<T>::_min(const BstNodePtr& subTree) const {
   /* Find minimal node in a sub-tree. */
-  
+
   auto x = subTree;
   while (x->_left != nullptr)
     x = x->_left;
@@ -192,7 +191,7 @@ template <typename T>
 typename BinarySearchTree<T>::iterator
 BinarySearchTree<T>::find(const T& key) {
   /* Search given key in a tree.
-     Return iterator if found else end(). */
+     Return iterator on node if it is found, else end(). */
 
   iterator foundNode = end();
   auto node = _root;
@@ -210,7 +209,7 @@ BinarySearchTree<T>::find(const T& key) {
 
 template <typename T>
 void BinarySearchTree<T>::_transplant(const BstNodePtr& u, const BstNodePtr& v) {
-  /* Transplant v tree to u node */
+  /* Transplant tree with root in v to u node */
 
   if (u->_parent == _header) {
     _root = v;
@@ -257,6 +256,7 @@ void BinarySearchTree<T>::erase(iterator& it) {
 template <typename T>
 void BinarySearchTree<T>::erase(const T& key) {
   // Erase node by key. Initially tries to find such key in the tree
+
   auto node = find(key);
   
   // If node was found - remove it
@@ -291,6 +291,7 @@ BinarySearchTree<T>::BstIterator::operator++() {
 template <typename T>
 void BinarySearchTree<T>::clear() {
   // Post-order traverse nodes and clear them
+  
   auto node = _header;
   auto stack = std::stack<BstNodePtr>();
   BstNodePtr lastVisited = nullptr;
