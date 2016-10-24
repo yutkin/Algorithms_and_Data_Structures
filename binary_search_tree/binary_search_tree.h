@@ -89,6 +89,10 @@ public:
     return _tree_size;
   }
 
+  bool empty() const {
+    return _tree_size == 0;
+  }
+
   iterator find(const DataType&);
 
 private:
@@ -291,7 +295,7 @@ BinarySearchTree<T>::BstIterator::operator++() {
 template <typename T>
 void BinarySearchTree<T>::clear() {
   // Post-order traverse nodes and clear them
-  
+
   auto node = _header;
   auto stack = std::stack<BstNodePtr>();
   BstNodePtr lastVisited = nullptr;

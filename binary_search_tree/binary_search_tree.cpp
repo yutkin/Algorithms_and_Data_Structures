@@ -7,7 +7,7 @@
 
 using namespace std;
 
-size_t N = 100000;
+size_t N = 1000000;
 
 random_device rd;
 mt19937 rng(rd());
@@ -35,19 +35,19 @@ int main() {
 
   auto bst_it = bst.begin();
   auto set_it = s.begin();
-  for (size_t i = 0; i < bst.size(); ++i) {
+  while(!bst.empty()) {
     
     assert(*bst_it == *set_it);
     assert(bst.size() == s.size());
     
-    auto old_bst = bst_it;
-    auto old_set = set_it;
+    auto tmp_bst_it = bst_it;
+    auto tmp_set_it = set_it;
     
     ++bst_it;
     ++set_it;
     
-    s.erase(old_set);
-    bst.erase(old_bst);
+    s.erase(tmp_set_it);
+    bst.erase(tmp_bst_it);
   }
 
 }
