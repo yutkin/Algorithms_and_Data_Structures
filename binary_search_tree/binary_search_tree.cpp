@@ -1,12 +1,13 @@
 #include "binary_search_tree.h"
 
 #include <algorithm>
+#include <set>
 #include <cassert>
 #include <random>
 
 using namespace std;
 
-int N = 5;
+size_t N = 100000;
 
 random_device rd;
 mt19937 rng(rd());
@@ -14,35 +15,39 @@ uniform_int_distribution<int> uni(-10*N,10*N);
 
 int main() {
   custom::BinarySearchTree<int> bst;
+  std::set<int> s;
   
-  cout << "Generated:\n";
-  vector<int> v(N);
-  for (size_t i = 0; i < v.size(); ++i) {
-    auto r = uni(rng);
-    v[i] = r;
-    bst.insert(r);
-    cout << r << endl;
+  for (size_t i = 0; i < N; ++i) {
+    auto k = uni(rng);
+    s.insert(k);
+    bst.insert(k);
   }
-  cout << endl;
 
-  auto vec_min = *min_element(v.begin(), v.end());
-  auto tree_min = bst.min();
-  cout << "Tree min: ";
-  cout << tree_min << " vec min: " << vec_min << endl;
-  cout << endl;
-  assert(vec_min == tree_min);
-  assert(bst.find(vec_min) != bst.end());
 
-  cout << "Printed tree:\n";
-  bst.printTree();
-  cout << endl;
+  auto set_min = *s.begin();
+  auto set_max = *s.rbegin();
 
-  // while (true) {
-  //   custom::BinarySearchTree<int> bst;
-  //   for (size_t i = 0; i < 100; ++i) {
-  //     auto r = uni(rng);
-  //     bst.insert(r);
-  //   }    
-  // }
-  
+  assert(set_min == bst.min());
+  assert(set_max == bst.max());
+
+  assert(bst.find(set_min) != bst.end());
+  assert(bst.find(set_max) != bst.end());
+
+  auto bst_it = bst.begin();
+  auto set_it = s.begin();
+  for (size_t i = 0; i < bst.size(); ++i) {
+    
+    assert(*bst_it == *set_it);
+    assert(bst.size() == s.size());
+    
+    auto old_bst = bst_it;
+    auto old_set = set_it;
+    
+    ++bst_it;
+    ++set_it;
+    
+    s.erase(old_set);
+    bst.erase(old_bst);
+  }
+
 }
