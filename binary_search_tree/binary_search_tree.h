@@ -1,8 +1,8 @@
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
 
-#include <iostream>
 #include <cassert>
+#include <iostream>
 #include <memory>
 #include <stack>
 
@@ -10,35 +10,33 @@ namespace custom {
 
 template <typename DataType>
 class BinarySearchTree {
-
   /* Binary Search Tree (BST) */
 
   struct BstNode {
     typedef std::shared_ptr<BstNode> BstNodePtr;
 
-    BstNode(const DataType& key,
-            BstNodePtr leftChild = nullptr,
-            BstNodePtr rightChild = nullptr):
-    _key(key), _left(leftChild), _right(rightChild) {}
+    BstNode(const DataType& key, BstNodePtr leftChild = nullptr,
+            BstNodePtr rightChild = nullptr)
+        : _key(key), _left(leftChild), _right(rightChild) {}
 
     DataType _key;
-    BstNodePtr  _left;
-    BstNodePtr  _right;
-    BstNodePtr  _parent;
+    BstNodePtr _left;
+    BstNodePtr _right;
+    BstNodePtr _parent;
   };
 
   typedef typename BstNode::BstNodePtr BstNodePtr;
 
   struct BstIterator {
-    friend class BinarySearchTree; // For access to _node member
-  public:
-    BstIterator(const BstNodePtr& node): _node(node) {}
+    friend class BinarySearchTree;  // For access to _node member
+   public:
+    BstIterator(const BstNodePtr& node) : _node(node) {}
     BstIterator& operator++();
 
     bool operator==(const BstIterator& rhs) const {
       return rhs._node == this->_node;
     };
-    
+
     bool operator!=(const BstIterator& rhs) const {
       return rhs._node != this->_node;
     };
@@ -46,21 +44,22 @@ class BinarySearchTree {
     const DataType& operator*() const {
       /* Undefined behavior providing that _node is nullptr ¯\_(ツ)_/¯.
          Maybe throw an exception? */
-      return _node->_key; 
+      return _node->_key;
     };
-  private:
+
+   private:
     BstNodePtr _node;
   };
 
-public:
+ public:
   typedef struct BstIterator iterator;
 
-  explicit BinarySearchTree(): 
-    // 42 is random value. Just to meet a constructor requirements.
-    _header(std::make_shared<BstNode>(42)),
-    _leftmost(_header),
-    _rightmost(_header),
-    _end(_header) {}
+  explicit BinarySearchTree()
+      :  // 42 is random value. Just to meet a constructor requirements.
+        _header(std::make_shared<BstNode>(42)),
+        _leftmost(_header),
+        _rightmost(_header),
+        _end(_header) {}
 
   ~BinarySearchTree() {
     clear();
@@ -76,26 +75,18 @@ public:
 
   DataType min() const;
   DataType max() const;
-  
-  iterator begin() const {
-    return _leftmost;
-  };
 
-  iterator end() const { 
-    return _end;
-  }
+  iterator begin() const { return _leftmost; };
 
-  size_t size() const { 
-    return _tree_size;
-  }
+  iterator end() const { return _end; }
 
-  bool empty() const {
-    return _tree_size == 0;
-  }
+  size_t size() const { return _tree_size; }
+
+  bool empty() const { return _tree_size == 0; }
 
   iterator find(const DataType&);
 
-private:
+ private:
   void _transplant(const BstNodePtr&, const BstNodePtr&);
   BstNodePtr _min(const BstNodePtr&) const;
 
@@ -131,7 +122,7 @@ void BinarySearchTree<T>::insert(const T& key) {
   BstNodePtr y = _header;
 
   auto x = _root;
-  
+
   // Find appropriate position for new node
   while (x != nullptr) {
     y = x;
@@ -143,9 +134,9 @@ void BinarySearchTree<T>::insert(const T& key) {
       // Force the tree to store only unique elements
       return;
   }
-  
+
   newNode->_parent = y;
-  
+
   if (y == _header) {
     // Tree is empty. newNode is new root.
     _root = newNode;
@@ -156,26 +147,23 @@ void BinarySearchTree<T>::insert(const T& key) {
     y->_left = newNode;
     /* If new node < _leftmost (minimal) node.
        Than update that. */
-    if (newNode->_key < _leftmost._node->_key)
-      _leftmost._node = newNode;
+    if (newNode->_key < _leftmost._node->_key) _leftmost._node = newNode;
   } else {
     y->_right = newNode;
     /* If new node > _rightmost (maximal) node.
        Than update that. */
-    if (newNode->_key > _rightmost._node->_key)
-      _rightmost._node = newNode;
+    if (newNode->_key > _rightmost._node->_key) _rightmost._node = newNode;
   }
   ++_tree_size;
 }
 
 template <typename T>
-typename BinarySearchTree<T>::BstNodePtr
-BinarySearchTree<T>::_min(const BstNodePtr& subTree) const {
+typename BinarySearchTree<T>::BstNodePtr BinarySearchTree<T>::_min(
+    const BstNodePtr& subTree) const {
   /* Find minimal node in a sub-tree. */
 
   auto x = subTree;
-  while (x->_left != nullptr)
-    x = x->_left;
+  while (x->_left != nullptr) x = x->_left;
   return x;
 }
 
@@ -192,8 +180,7 @@ T BinarySearchTree<T>::max() const {
 }
 
 template <typename T>
-typename BinarySearchTree<T>::iterator
-BinarySearchTree<T>::find(const T& key) {
+typename BinarySearchTree<T>::iterator BinarySearchTree<T>::find(const T& key) {
   /* Search given key in a tree.
      Return iterator on node if it is found, else end(). */
 
@@ -212,7 +199,8 @@ BinarySearchTree<T>::find(const T& key) {
 }
 
 template <typename T>
-void BinarySearchTree<T>::_transplant(const BstNodePtr& u, const BstNodePtr& v) {
+void BinarySearchTree<T>::_transplant(const BstNodePtr& u,
+                                      const BstNodePtr& v) {
   /* Transplant tree with root in v to u node */
 
   if (u->_parent == _header) {
@@ -223,8 +211,7 @@ void BinarySearchTree<T>::_transplant(const BstNodePtr& u, const BstNodePtr& v) 
   else
     u->_parent->_right = v;
 
-  if (v != nullptr)
-    v->_parent = u->_parent;
+  if (v != nullptr) v->_parent = u->_parent;
 }
 
 template <typename T>
@@ -249,11 +236,10 @@ void BinarySearchTree<T>::erase(iterator& it) {
     node->_left->_parent = x;
   }
 
-  /* If removed node was the _leftmost node 
+  /* If removed node was the _leftmost node
      than update _leftmost by incrementing. */
-  if (node == _leftmost._node)
-    ++_leftmost;
-  
+  if (node == _leftmost._node) ++_leftmost;
+
   --_tree_size;
 }
 
@@ -262,33 +248,30 @@ void BinarySearchTree<T>::erase(const T& key) {
   // Erase node by key. Initially tries to find such key in the tree
 
   auto node = find(key);
-  
+
   // If node was found - remove it
-  if (node != end())
-    erase(node);
+  if (node != end()) erase(node);
 }
 
 template <typename T>
-typename BinarySearchTree<T>::iterator&
-BinarySearchTree<T>::BstIterator::operator++() {
+typename BinarySearchTree<T>::iterator& BinarySearchTree<T>::BstIterator::
+operator++() {
   /* In-order traverse. Next after _rightmost element is _header (end) */
 
   if (_node->_right != nullptr) {
     _node = _node->_right;
-    while (_node->_left != nullptr)
-      _node = _node->_left;
+    while (_node->_left != nullptr) _node = _node->_left;
     return *this;
   }
-  
+
   auto parent = _node->_parent;
   while (parent->_right == _node) {
     _node = parent;
     parent = _node->_parent;
-  }  
+  }
 
-  if (_node->_right != parent)
-    _node = parent;
-  
+  if (_node->_right != parent) _node = parent;
+
   return *this;
 }
 
@@ -318,5 +301,5 @@ void BinarySearchTree<T>::clear() {
   }
 }
 
-} // custom namespace
-#endif // BINARY_SEARCH_TREE_H
+}  // custom namespace
+#endif  // BINARY_SEARCH_TREE_H

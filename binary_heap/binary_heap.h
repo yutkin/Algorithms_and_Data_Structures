@@ -1,9 +1,9 @@
 #ifndef BINARY_HEAP_H
 #define BINARY_HEAP_H
 
-#include <vector>
 #include <cassert>
 #include <initializer_list>
+#include <vector>
 
 using std::swap;
 
@@ -11,33 +11,26 @@ namespace custom {
 
 template <typename DataType, typename Compare = std::less<DataType> >
 class BinaryHeap {
-public:
-  explicit BinaryHeap(): heap(1) {}
+ public:
+  explicit BinaryHeap() : heap(1) {}
 
-  explicit BinaryHeap(const std::initializer_list<DataType>& init): heap(1) {
-    for (auto it = init.begin(); it != init.end(); ++it)
-      push(*it);
+  explicit BinaryHeap(const std::initializer_list<DataType>& init) : heap(1) {
+    for (auto it = init.begin(); it != init.end(); ++it) push(*it);
   }
-  
+
   template <typename T>
-  explicit BinaryHeap(T begin, T end): heap(1) {
-    for (auto it = begin; it != end; ++it)
-      push(*it);
+  explicit BinaryHeap(T begin, T end) : heap(1) {
+    for (auto it = begin; it != end; ++it) push(*it);
   }
 
-  size_t size() const {
-    return heap_size;
-  }
+  size_t size() const { return heap_size; }
 
-  bool empty() const {
-    return heap_size == 0;
-  }
+  bool empty() const { return heap_size == 0; }
 
   void push(const DataType& val) {
     // If there is no enough space in heap, than allocate new
-    if (heap_size == heap.capacity())
-      heap.resize(heap.capacity()*2);
-    
+    if (heap_size == heap.capacity()) heap.resize(heap.capacity() * 2);
+
     // Add new element as the leave
     heap[heap_size] = val;
 
@@ -66,26 +59,19 @@ public:
     return heap;
   }
 
-private:
+ private:
   // (i-1)/2 parent's node
-  size_t parent(size_t i) const {
-    return (i - 1) >> 1;
-  }
-  
+  size_t parent(size_t i) const { return (i - 1) >> 1; }
+
   // 2*i+1 - left child
-  size_t leftChild(size_t i) const {
-    return (i << 1) + 1;
-  } 
+  size_t leftChild(size_t i) const { return (i << 1) + 1; }
 
   // 2*i+2 - right child
-  size_t rightChild(size_t i) const {
-    return (i + 1) << 1;
-  }
-  
+  size_t rightChild(size_t i) const { return (i + 1) << 1; }
+
   void siftUp(size_t i) {
     // While i-th node is not a root and heap property is violated
     while (i > 0 && compare(heap[parent(i)], heap[i])) {
-      
       // Swap i-th node with its parent
       swap(heap[parent(i)], heap[i]);
 
@@ -95,21 +81,19 @@ private:
   }
 
   void siftDown(size_t i) {
-    
     // While i-th node has left child
     while (leftChild(i) < heap_size) {
       auto maxInd = i;
-      
+
       auto lChild = leftChild(i);
       auto rChild = rightChild(i);
 
       // Find maximum of i-th node children
       if (lChild < heap_size && compare(heap[maxInd], heap[lChild]))
         maxInd = lChild;
-      
+
       if (rChild < heap_size && compare(heap[maxInd], heap[rChild]))
         maxInd = rChild;
-
 
       // If heap property is NOT violated
       if (i == maxInd) break;
@@ -127,6 +111,6 @@ private:
   Compare compare = Compare{};
 };
 
-} // custom namespace
+}  // custom namespace
 
-#endif // BINARY_HEAP_H
+#endif  // BINARY_HEAP_H
