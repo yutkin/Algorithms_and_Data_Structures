@@ -21,3 +21,6 @@ venv
 node_modules
 .sass-cache
 a.out
+.idea/
+cmake-build-debug/
+bin/

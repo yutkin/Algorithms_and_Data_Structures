@@ -7,7 +7,7 @@
 
 using namespace std;
 
-size_t N = 1000000;
+size_t N = 10000;
 
 random_device rd;
 mt19937 rng(rd());
