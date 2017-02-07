@@ -28,7 +28,7 @@ pair<ll, vector<int>> dijkstra(const vector<vector<pair<int, size_t>>>& graph,
    *
    * Output:
    * Pair of min length of the route and shortest path.
-   * If there is no any path between than :src: and :dsc: then
+   * If there is no any path between :src: and :dsc: then
    * min length of the route is -1.
    */
 
