@@ -18,8 +18,8 @@ pair<ll, vector<int>> dijkstra(const vector<vector<pair<int, size_t>>>& graph,
   /*
    * Description:
    * Dijkstra's algorithm is an algorithm for finding the shortest paths between
-   * source node and all other nodes
-   * in the given graph with positive weights of edges.
+   * source node and all other nodes in the given graph with positive weights
+   * of edges.
    *
    * Input:
    * :graph: graph represented as adjacency lists
@@ -28,7 +28,7 @@ pair<ll, vector<int>> dijkstra(const vector<vector<pair<int, size_t>>>& graph,
    *
    * Output:
    * Pair of min length of the route and shortest path.
-   * If :src: and :dst: lies in a different strongly connected components than
+   * If there is no any path between than :src: and :dsc: then
    * min length of the route is -1.
    */
 
